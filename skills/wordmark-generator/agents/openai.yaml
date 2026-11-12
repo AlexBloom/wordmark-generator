@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wordmark Generator"
+  short_description: "the v1 of your wordmark 9000x faster"
+  default_prompt: "Use $wordmark-generator to explore 50 wordmark lockups for my brand using my local fonts."

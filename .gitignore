@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+.cache/
+.wordmark/
+output/
+.env*
+!.env.example
+*.log
+coverage/
+
+figma-plugin/manifest.local.json

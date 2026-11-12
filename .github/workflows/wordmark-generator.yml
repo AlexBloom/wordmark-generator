@@ -1,0 +1,68 @@
+name: wordmark generator
+run-name: Wordmark Generator / ${{ inputs.count }} lockups
+on:
+  workflow_dispatch:
+    inputs:
+      names:
+        description: 'Brand names as a JSON array, e.g. ["Acme", "Studio"]'
+        type: string
+        required: true
+        default: '["Your Brand"]'
+      combine:
+        description: Stack all names in every lockup
+        type: boolean
+        default: false
+      count:
+        description: Number of wordmark lockups
+        type: choice
+        options: ['10', '50', '100', '250']
+        default: '50'
+      font_directory:
+        description: Optional font directory in your checked-out repository; blank uses runner system fonts
+        type: string
+        default: ''
+      seed:
+        description: Reproducible shuffle seed
+        type: number
+        default: 9000
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build request
+        env:
+          BRAND_NAMES: ${{ inputs.names }}
+          LOCKUP_COUNT: ${{ inputs.count }}
+          COMBINE: ${{ inputs.combine }}
+          FONT_DIRECTORY: ${{ inputs.font_directory }}
+          SEED: ${{ inputs.seed }}
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const req = { names: JSON.parse(process.env.BRAND_NAMES), count: Number(process.env.LOCKUP_COUNT), combine: process.env.COMBINE === 'true', seed: Number(process.env.SEED) };
+          if (process.env.FONT_DIRECTORY) {
+            const dir = path.resolve(process.env.FONT_DIRECTORY);
+            const workspace = path.resolve(process.env.GITHUB_WORKSPACE);
+            if (!dir.startsWith(workspace + path.sep)) throw new Error('Font directory must be inside this checkout.');
+            req.fontDirectory = dir;
+          }
+          fs.writeFileSync('request.json', JSON.stringify(req));
+          JS
+      - name: Generate wordmarks
+        run: node bin/wordmark.mjs generate --request request.json --out output
+      - name: Downloadable exports
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordmark-generator-exports
+          path: |
+            output/
+            output.zip
+          retention-days: 7
