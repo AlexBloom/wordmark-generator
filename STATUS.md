@@ -9,3 +9,7 @@ Local tests: five integration tests pass, including all four quantities through 
 Preview: http://127.0.0.1:9000. Start/restart with `npm start` from this repository. Runtime files: .wordmark/. Source compilation cache: .cache/.
 
 GitHub creation, branches, protection, and hosted CI are being finalized. No production website is deployed. VS Code CLI is unavailable on this Mac; project files can be opened manually in an editor.
+
+GitHub: public repository created at https://github.com/AlexBloom/wordmark-generator, but source push is currently blocked by GitHub OAuth missing `workflow` scope. SSH is also unavailable for this account on this Mac. Local main/dev commits are intact; no branches have been pushed yet. Awaiting user authorization to refresh the existing GitHub connection with workflow scope. Hosted CI, branch protection and manual generation execution are pending that push.
+
+Installed skill: /Users/alexbloom/.codex/skills/wordmark-generator, self-contained launcher verified. Skill frontmatter validated. Browser font-picker upload also verified with a system font. Local server is running on port 9000; runtime process was launched from `node bin/wordmark.mjs serve --port 9000`.
